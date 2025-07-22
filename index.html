@@ -102,11 +102,7 @@
                 </button>
             </form>
             
-            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-                <p class="text-sm text-gray-600 mb-2"><strong>Credenciais de teste:</strong></p>
-                <p class="text-xs text-gray-500">Admin: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bddcd9d0d4d3fddcd9d0d4d393ded2d0">[email&#160;protected]</a> / admin123</p>
-                <p class="text-xs text-gray-500">Usuário: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f08583859182999fb08495838495de939f9d">[email&#160;protected]</a> / 123456</p>
-            </div>
+            
         </div>
     </div>
 
@@ -1586,52 +1582,54 @@
         }
 
         function handleNovoDocumento(e) {
-            e.preventDefault();
-            showLoading();
-            
-            const nome = document.getElementById('nomeDocumento').value.trim();
-            const categoria = document.getElementById('categoriaDocumento').value;
-            const arquivo = document.getElementById('arquivoDocumento').files[0];
-            const descricao = document.getElementById('descricaoDocumento').value.trim();
-            
-            if (!nome || !categoria || !arquivo) {
-                hideLoading();
-                showError('novoDocumentoMessages', 'Preencha todos os campos obrigatórios.');
-                return;
-            }
-            
-            if (!currentObra) {
-                hideLoading();
-                showError('novoDocumentoMessages', 'Erro: obra não selecionada.');
-                return;
-            }
-            
-            // For demo purposes, we'll simulate file upload
-            const documentos = JSON.parse(localStorage.getItem('documentos') || '[]');
-            const novoDocumento = {
-                id: 'doc-' + Date.now(),
-                obraId: currentObra.id,
-                nome,
-                categoria,
-                descricao,
-                arquivo: arquivo.name,
-                tamanho: arquivo.size,
-                tipo: arquivo.type,
-                dataCadastro: new Date().toISOString()
-            };
-            
-            documentos.push(novoDocumento);
-            localStorage.setItem('documentos', JSON.stringify(documentos));
-            
-            hideLoading();
-            showSuccess('novoDocumentoMessages', 'Documento enviado com sucesso!');
-            
-            setTimeout(() => {
-                hideModal('novoDocumentoModal');
-                document.getElementById('novoDocumentoForm').reset();
-                document.getElementById('novoDocumentoMessages').innerHTML = '';
-                loadObraDocumentos();
-            }, 1500);
+    e.preventDefault();
+    showLoading();
+
+    const nome = document.getElementById('nomeDocumento').value.trim();
+    const categoria = document.getElementById('categoriaDocumento').value;
+    const arquivoInput = document.getElementById('arquivoDocumento');
+    const descricao = document.getElementById('descricaoDocumento').value.trim();
+
+    if (!nome || !categoria || !arquivoInput.files.length) {
+        hideLoading();
+        showError('novoDocumentoMessages', 'Preencha todos os campos obrigatórios.');
+        return;
+    }
+
+    const arquivo = arquivoInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        const base64 = event.target.result;
+
+        const documentos = JSON.parse(localStorage.getItem('documentos') || '[]');
+        const novoDocumento = {
+            id: 'doc-' + Date.now(),
+            obraId: currentObra.id,
+            nome,
+            categoria,
+            descricao,
+            nomeArquivo: arquivo.name,
+            arquivoBase64: base64,
+            dataCadastro: new Date().toISOString()
+        };
+
+        documentos.push(novoDocumento);
+        localStorage.setItem('documentos', JSON.stringify(documentos));
+
+        hideLoading();
+        showSuccess('novoDocumentoMessages', 'Documento enviado com sucesso!');
+
+        setTimeout(() => {
+            hideModal('novoDocumentoModal');
+            document.getElementById('novoDocumentoForm').reset();
+            document.getElementById('novoDocumentoMessages').innerHTML = '';
+            loadObraDocumentos();
+        }, 1500);
+    };
+
+    reader.readAsDataURL(arquivo);
+}, 1500);
         }
 
         // Utility functions
