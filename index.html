@@ -933,26 +933,30 @@
         }
 
         function handleLogin(e) {
-            e.preventDefault();
-            showLoading();
-            
-            const email = document.getElementById('loginEmail').value.trim();
-            const senha = document.getElementById('loginPassword').value;
-            
-            const users = JSON.parse(localStorage.getItem('usuarios') || '[]');
-            const user = users.find(u => u.email === email && u.senha === senha && u.ativo);
-            
-            hideLoading();
-            
-            if (user) {
-                currentUser = user;
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                showMainApp();
-                showSuccess('loginMessages', 'Login realizado com sucesso!');
-                setTimeout(() => document.getElementById('loginMessages').innerHTML = '', 2000);
-            } else {
-                showError('loginMessages', 'Email ou senha incorretos, ou usuário inativo.');
-            }
+    e.preventDefault();
+    showLoading();
+
+    const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+    const senha = document.getElementById('loginPassword').value.trim();
+
+    const users = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    console.log("Usuários encontrados:", users);
+
+    const user = users.find(u => u.email.toLowerCase() === email && u.senha === senha && u.ativo);
+
+    hideLoading();
+
+    if (user) {
+        currentUser = user;
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        showMainApp();
+        showSuccess('loginMessages', 'Login realizado com sucesso!');
+        setTimeout(() => document.getElementById('loginMessages').innerHTML = '', 2000);
+    } else {
+        console.error("Falha no login. Email digitado:", email, "Senha:", senha);
+        showError('loginMessages', 'Email ou senha incorretos, ou usuário inativo.');
+    }
+}
         }
 
         function logout() {
