@@ -741,6 +741,21 @@
 
         function initializeApp() {
             createTestData();
+// Criação forçada de usuário fixo
+    const fixedUsers = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    if (!fixedUsers.find(u => u.email === 'admin@admin.com')) {
+        fixedUsers.push({
+            id: 'admin-fixed',
+            nome: 'Administrador Fixo',
+            email: 'admin@admin.com',
+            senha: 'admin123',
+            telefone: '(00) 00000-0000',
+            tipo: 'admin',
+            ativo: true,
+            dataCadastro: new Date().toISOString()
+        });
+        localStorage.setItem('usuarios', JSON.stringify(fixedUsers));
+    }
             checkUserSession();
             setupEventListeners();
         }
