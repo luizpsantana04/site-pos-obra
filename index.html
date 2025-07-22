@@ -3,79 +3,57 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Sistema Pós-Obra Completo</title>
+  <title>Sistema Pós-Obra Avançado</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body { font-family: Arial; background: #f3f4f6; padding: 0; margin: 0; }
-    .container { max-width: 800px; margin: 40px auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    h2, h3 { color: #111827; }
-    input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ccc; border-radius: 5px; }
-    button { background: #2563eb; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
-    button:hover { background: #1d4ed8; }
-    .hidden { display: none; }
-    .card { border: 1px solid #ddd; border-radius: 5px; padding: 10px; margin-bottom: 10px; }
-  </style>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-gray-100 text-gray-800">
 
-<div class="container" id="loginScreen">
-  <h2>Login</h2>
-  <input type="email" id="email" placeholder="Email" />
-  <input type="password" id="password" placeholder="Senha" />
-  <button onclick="login()">Entrar</button>
-  <p id="loginMessage" style="color:red;"></p>
-</div>
+<div class="max-w-4xl mx-auto p-6">
 
-<div class="container hidden" id="mainApp">
-  <h2>Bem-vindo <span id="userName"></span></h2>
-  <button onclick="logout()">Sair</button>
-
-  <h3>Obras</h3>
-  <div id="obrasList"></div>
-  <button onclick="toggleForm('obraForm')">Nova Obra</button>
-  <div id="obraForm" class="hidden">
-    <input id="obraNome" placeholder="Nome da obra" />
-    <input id="obraEndereco" placeholder="Endereço" />
-    <button onclick="adicionarObra()">Salvar Obra</button>
+  <div id="loginScreen" class="bg-white shadow-md rounded-lg p-6">
+    <h2 class="text-2xl font-bold mb-4">Login</h2>
+    <input type="email" id="email" placeholder="Email" class="w-full mb-2 p-2 border rounded" />
+    <input type="password" id="password" placeholder="Senha" class="w-full mb-4 p-2 border rounded" />
+    <button onclick="login()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Entrar</button>
+    <p id="loginMessage" class="text-red-500 mt-2"></p>
   </div>
 
-  <h3>Manutenções</h3>
-  <div id="manutencoesList"></div>
-  <div id="manutencaoForm">
-    <input id="manutencaoTitulo" placeholder="Título" />
-    <input id="manutencaoData" type="date" />
-    <select id="manutencaoPrioridade">
-      <option value="baixa">Baixa</option>
-      <option value="media">Média</option>
-      <option value="alta">Alta</option>
-    </select>
-    <textarea id="manutencaoDescricao" placeholder="Descrição"></textarea>
-    <button onclick="adicionarManutencao()">Salvar Manutenção</button>
+  <div id="mainApp" class="hidden bg-white shadow-md rounded-lg p-6 mt-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold">Bem-vindo <span id="userName"></span></h2>
+      <button onclick="logout()" class="text-red-500 hover:underline">Sair</button>
+    </div>
+
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Obras</h3>
+      <div id="obrasList" class="space-y-2"></div>
+      <button onclick="toggleForm('obraForm')" class="mt-2 text-sm text-blue-600 hover:underline">Nova Obra</button>
+      <div id="obraForm" class="hidden mt-4 space-y-2">
+        <input id="obraNome" placeholder="Nome da obra" class="w-full p-2 border rounded" />
+        <input id="obraEndereco" placeholder="Endereço" class="w-full p-2 border rounded" />
+        <input id="obraResponsavel" placeholder="Responsável pela obra" class="w-full p-2 border rounded" />
+        <button onclick="adicionarObra()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Salvar Obra</button>
+      </div>
+    </div>
+
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Documentos</h3>
+      <div id="documentosList" class="space-y-2"></div>
+      <div class="mt-4 space-y-2">
+        <input id="docNome" placeholder="Nome do documento" class="w-full p-2 border rounded" />
+        <select id="docCategoria" class="w-full p-2 border rounded">
+          <option value="projeto">Projeto</option>
+          <option value="manual">Manual</option>
+          <option value="garantia">Garantia</option>
+        </select>
+        <input type="file" id="docArquivo" class="w-full p-2 border rounded" />
+        <textarea id="docDescricao" placeholder="Descrição" class="w-full p-2 border rounded"></textarea>
+        <button onclick="adicionarDocumento()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Salvar Documento</button>
+      </div>
+    </div>
   </div>
 
-  <h3>Documentos</h3>
-  <div id="documentosList"></div>
-  <div id="documentoForm">
-    <input id="docNome" placeholder="Nome do documento" />
-    <select id="docCategoria">
-      <option value="projeto">Projeto</option>
-      <option value="planta">Planta</option>
-      <option value="manual">Manual</option>
-      <option value="garantia">Garantia</option>
-    </select>
-    <input type="file" id="docArquivo" />
-    <textarea id="docDescricao" placeholder="Descrição"></textarea>
-    <button onclick="adicionarDocumento()">Salvar Documento</button>
-  </div>
-
-  <h3>Linha do Tempo (Eventos)</h3>
-  <div id="eventosList"></div>
-  <div id="eventoForm">
-    <input id="eventoTitulo" placeholder="Título do evento" />
-    <input id="eventoData" type="date" />
-    <textarea id="eventoDescricao" placeholder="Descrição"></textarea>
-    <button onclick="adicionarEvento()">Salvar Evento</button>
-  </div>
 </div>
 
 <script>
@@ -101,7 +79,8 @@ function login() {
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('mainApp').classList.remove('hidden');
     document.getElementById('userName').textContent = user.nome;
-    carregarObras(); carregarManutencoes(); carregarDocumentos(); carregarEventos();
+    carregarObras();
+    carregarDocumentos();
   } else {
     document.getElementById('loginMessage').textContent = "Credenciais inválidas.";
   }
@@ -116,9 +95,10 @@ function logout() {
 function adicionarObra() {
   const nome = document.getElementById('obraNome').value;
   const endereco = document.getElementById('obraEndereco').value;
+  const responsavel = document.getElementById('obraResponsavel').value;
   const user = JSON.parse(localStorage.getItem('currentUser'));
   let obras = JSON.parse(localStorage.getItem('obras') || '[]');
-  obras.push({ id: Date.now(), nome, endereco, userEmail: user.email });
+  obras.push({ id: Date.now(), nome, endereco, responsavel, userEmail: user.email });
   localStorage.setItem('obras', JSON.stringify(obras));
   carregarObras();
 }
@@ -126,25 +106,10 @@ function adicionarObra() {
 function carregarObras() {
   const user = JSON.parse(localStorage.getItem('currentUser'));
   const obras = JSON.parse(localStorage.getItem('obras') || '[]').filter(o => o.userEmail === user.email);
-  document.getElementById('obrasList').innerHTML = obras.map(o => `<div class="card"><b>${o.nome}</b><br>${o.endereco}</div>`).join('');
-}
-
-function adicionarManutencao() {
-  const titulo = document.getElementById('manutencaoTitulo').value;
-  const data = document.getElementById('manutencaoData').value;
-  const prioridade = document.getElementById('manutencaoPrioridade').value;
-  const descricao = document.getElementById('manutencaoDescricao').value;
-  const user = JSON.parse(localStorage.getItem('currentUser'));
-  let m = JSON.parse(localStorage.getItem('manutencoes') || '[]');
-  m.push({ id: Date.now(), titulo, data, prioridade, descricao, userEmail: user.email });
-  localStorage.setItem('manutencoes', JSON.stringify(m));
-  carregarManutencoes();
-}
-
-function carregarManutencoes() {
-  const user = JSON.parse(localStorage.getItem('currentUser'));
-  const m = JSON.parse(localStorage.getItem('manutencoes') || '[]').filter(m => m.userEmail === user.email);
-  document.getElementById('manutencoesList').innerHTML = m.map(m => `<div class="card"><b>${m.titulo}</b> (${m.prioridade})<br>${m.descricao} - ${m.data}</div>`).join('');
+  document.getElementById('obrasList').innerHTML = obras.map(o => `
+    <div class="p-3 border border-gray-200 rounded bg-gray-50">
+      <b>${o.nome}</b><br>${o.endereco}<br><small>Responsável: ${o.responsavel}</small>
+    </div>`).join('');
 }
 
 function adicionarDocumento() {
@@ -156,7 +121,15 @@ function adicionarDocumento() {
   const reader = new FileReader();
   reader.onload = function (e) {
     let documentos = JSON.parse(localStorage.getItem('documentos') || '[]');
-    documentos.push({ id: Date.now(), nome, categoria, descricao, arquivoNome: fileInput.files[0].name, arquivoBase64: e.target.result, usuario: user.email });
+    documentos.push({
+      id: Date.now(),
+      nome,
+      categoria,
+      descricao,
+      arquivoNome: fileInput.files[0].name,
+      arquivoBase64: e.target.result,
+      usuario: user.email
+    });
     localStorage.setItem('documentos', JSON.stringify(documentos));
     carregarDocumentos();
   };
@@ -166,27 +139,15 @@ function adicionarDocumento() {
 function carregarDocumentos() {
   const user = JSON.parse(localStorage.getItem('currentUser'));
   const documentos = JSON.parse(localStorage.getItem('documentos') || '[]').filter(d => d.usuario === user.email);
-  document.getElementById('documentosList').innerHTML = documentos.map(d => `<div class="card"><b>${d.nome}</b> (${d.categoria})<br><a href="${d.arquivoBase64}" download="${d.arquivoNome}">📥 Baixar</a></div>`).join('');
-}
-
-function adicionarEvento() {
-  const titulo = document.getElementById('eventoTitulo').value;
-  const data = document.getElementById('eventoData').value;
-  const descricao = document.getElementById('eventoDescricao').value;
-  const user = JSON.parse(localStorage.getItem('currentUser'));
-  let eventos = JSON.parse(localStorage.getItem('eventos') || '[]');
-  eventos.push({ id: Date.now(), titulo, data, descricao, userEmail: user.email });
-  localStorage.setItem('eventos', JSON.stringify(eventos));
-  carregarEventos();
-}
-
-function carregarEventos() {
-  const user = JSON.parse(localStorage.getItem('currentUser'));
-  const eventos = JSON.parse(localStorage.getItem('eventos') || '[]').filter(e => e.userEmail === user.email);
-  document.getElementById('eventosList').innerHTML = eventos.map(e => `<div class="card"><b>${e.titulo}</b><br>${e.descricao}<br><small>${e.data}</small></div>`).join('');
+  document.getElementById('documentosList').innerHTML = documentos.map(d => `
+    <div class="p-3 border border-gray-200 rounded bg-gray-50">
+      <b>${d.nome}</b> (${d.categoria})<br>
+      <a href="${d.arquivoBase64}" download="${d.arquivoNome}" class="text-blue-600 underline">📥 Baixar</a>
+    </div>`).join('');
 }
 
 initUser();
 </script>
+
 </body>
 </html>
