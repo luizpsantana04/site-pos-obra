@@ -18,47 +18,70 @@
 </head>
 <body>
   <div class="container">
-    <h1 class="mb-4">Painel de Cadastro Pós-Obra</h1>
-    <div class="row row-cols-1 row-cols-md-2 g-4">
-      <div class="col">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Usuário</h5>
-            <button class="btn btn-primary" onclick="cadastrarUsuario()">Cadastrar Usuário</button>
-          </div>
-        </div>
+    <h1 class="mb-4">Sistema Pós-Obra</h1>
+
+    <!-- Tela de Login -->
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Login</h5>
+        <input id="loginEmail" type="email" class="form-control mb-2" placeholder="E-mail">
+        <input id="loginSenha" type="password" class="form-control mb-2" placeholder="Senha">
+        <button class="btn btn-success" onclick="fazerLogin()">Entrar</button>
       </div>
-      <div class="col">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Obra</h5>
-            <button class="btn btn-primary" onclick="cadastrarObra()">Cadastrar Obra</button>
-          </div>
-        </div>
+    </div>
+
+    <!-- Cadastro de Usuário -->
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Cadastrar Usuário</h5>
+        <input id="userNome" class="form-control mb-2" placeholder="Nome">
+        <input id="userEmail" class="form-control mb-2" placeholder="E-mail">
+        <input id="userSenha" class="form-control mb-2" placeholder="Senha">
+        <input id="userTelefone" class="form-control mb-2" placeholder="Telefone">
+        <button class="btn btn-primary" onclick="cadastrarUsuario()">Cadastrar</button>
       </div>
-      <div class="col">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Manutenção</h5>
-            <button class="btn btn-primary" onclick="cadastrarManutencao()">Cadastrar Manutenção</button>
-          </div>
-        </div>
+    </div>
+
+    <!-- Cadastro de Obra -->
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Cadastrar Obra</h5>
+        <input id="obraNome" class="form-control mb-2" placeholder="Nome da Obra">
+        <input id="obraResponsavel" class="form-control mb-2" placeholder="Responsável">
+        <input id="obraEndereco" class="form-control mb-2" placeholder="Endereço">
+        <input id="obraInicio" type="date" class="form-control mb-2" placeholder="Data Início">
+        <input id="obraFim" type="date" class="form-control mb-2" placeholder="Data Conclusão">
+        <textarea id="obraDescricao" class="form-control mb-2" placeholder="Descrição"></textarea>
+        <button class="btn btn-primary" onclick="cadastrarObra()">Cadastrar</button>
       </div>
-      <div class="col">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Documento</h5>
-            <button class="btn btn-primary" onclick="cadastrarDocumento()">Cadastrar Documento</button>
-          </div>
-        </div>
+    </div>
+
+    <!-- Cadastro de Manutenção -->
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Cadastrar Manutenção</h5>
+        <input id="manutencaoObraId" class="form-control mb-2" placeholder="ID da Obra">
+        <input id="manutencaoTitulo" class="form-control mb-2" placeholder="Título">
+        <input id="manutencaoData" type="date" class="form-control mb-2">
+        <select id="manutencaoPrioridade" class="form-control mb-2">
+          <option value="baixa">Baixa</option>
+          <option value="media">Média</option>
+          <option value="alta">Alta</option>
+        </select>
+        <textarea id="manutencaoDescricao" class="form-control mb-2" placeholder="Descrição"></textarea>
+        <button class="btn btn-primary" onclick="cadastrarManutencao()">Cadastrar</button>
       </div>
-      <div class="col">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Linha do Tempo</h5>
-            <button class="btn btn-primary" onclick="cadastrarEvento()">Cadastrar Evento</button>
-          </div>
-        </div>
+    </div>
+
+    <!-- Cadastro Linha do Tempo -->
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Cadastrar Evento da Obra</h5>
+        <input id="eventoObraId" class="form-control mb-2" placeholder="ID da Obra">
+        <input id="eventoTitulo" class="form-control mb-2" placeholder="Título do Evento">
+        <input id="eventoData" type="date" class="form-control mb-2">
+        <textarea id="eventoDescricao" class="form-control mb-2" placeholder="Descrição do Evento"></textarea>
+        <button class="btn btn-primary" onclick="cadastrarEvento()">Cadastrar</button>
       </div>
     </div>
   </div>
@@ -79,13 +102,19 @@
       firebase.initializeApp(firebaseConfig);
       const db = firebase.database();
 
+      window.fazerLogin = function () {
+        const email = document.getElementById("loginEmail").value;
+        const senha = document.getElementById("loginSenha").value;
+        alert("Login fictício: " + email);
+      }
+
       window.cadastrarUsuario = function () {
         const usuario = {
           id: 'user-' + Date.now(),
-          nome: "João da Silva",
-          email: "joao@teste.com",
-          senha: "123456",
-          telefone: "(11) 99999-9999",
+          nome: document.getElementById("userNome").value,
+          email: document.getElementById("userEmail").value,
+          senha: document.getElementById("userSenha").value,
+          telefone: document.getElementById("userTelefone").value,
           tipo: "usuario",
           ativo: true,
           dataCadastro: new Date().toISOString()
@@ -96,12 +125,12 @@
       window.cadastrarObra = function () {
         const obra = {
           id: 'obra-' + Date.now(),
-          nome: "Reforma Sala",
-          responsavel: "user-001",
-          endereco: "Rua XPTO, 123",
-          dataInicio: "2024-01-01",
-          dataConclusao: "2024-06-01",
-          descricao: "Reforma completa da sala",
+          nome: document.getElementById("obraNome").value,
+          responsavel: document.getElementById("obraResponsavel").value,
+          endereco: document.getElementById("obraEndereco").value,
+          dataInicio: document.getElementById("obraInicio").value,
+          dataConclusao: document.getElementById("obraFim").value,
+          descricao: document.getElementById("obraDescricao").value,
           dataCadastro: new Date().toISOString()
         };
         db.ref('obras').push(obra);
@@ -110,37 +139,24 @@
       window.cadastrarManutencao = function () {
         const manutencao = {
           id: 'man-' + Date.now(),
-          obraId: "obra-001",
-          titulo: "Revisão Elétrica",
-          descricao: "Verificar rede elétrica",
-          data: "2024-09-01",
-          prioridade: "alta",
+          obraId: document.getElementById("manutencaoObraId").value,
+          titulo: document.getElementById("manutencaoTitulo").value,
+          descricao: document.getElementById("manutencaoDescricao").value,
+          data: document.getElementById("manutencaoData").value,
+          prioridade: document.getElementById("manutencaoPrioridade").value,
           status: "pendente",
           dataCadastro: new Date().toISOString()
         };
         db.ref('manutencoes').push(manutencao);
       }
 
-      window.cadastrarDocumento = function () {
-        const documento = {
-          id: 'doc-' + Date.now(),
-          obraId: "obra-001",
-          nome: "Planta baixa",
-          categoria: "planta",
-          descricao: "PDF da planta",
-          url: "https://exemplo.com/documento.pdf",
-          dataCadastro: new Date().toISOString()
-        };
-        db.ref('documentos').push(documento);
-      }
-
       window.cadastrarEvento = function () {
         const evento = {
           id: 'event-' + Date.now(),
-          obraId: "obra-001",
-          titulo: "Fundação finalizada",
-          data: "2024-03-10",
-          descricao: "Encerrado o processo de fundação",
+          obraId: document.getElementById("eventoObraId").value,
+          titulo: document.getElementById("eventoTitulo").value,
+          data: document.getElementById("eventoData").value,
+          descricao: document.getElementById("eventoDescricao").value,
           dataCadastro: new Date().toISOString()
         };
         db.ref('eventos').push(evento);
@@ -149,3 +165,4 @@
   </script>
 </body>
 </html>
+
