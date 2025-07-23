@@ -1,6 +1,9 @@
 <!-- Página de Obras separada -->
 <div id="obrasView" class="container my-4 hidden">
-  <h2>Obras</h2>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Obras</h2>
+    <button class="btn btn-secondary" onclick="mostrarDashboard()">← Voltar ao Dashboard</button>
+  </div>
   <div class="mb-3">
     <input id="filtroObra" class="form-control" placeholder="Filtrar por nome ou responsável" oninput="filtrarObras()">
   </div>
@@ -12,6 +15,11 @@
     document.getElementById("appView").classList.add("hidden");
     document.getElementById("obrasView").classList.remove("hidden");
     carregarObrasCompleta();
+  }
+
+  function mostrarDashboard() {
+    document.getElementById("obrasView").classList.add("hidden");
+    document.getElementById("appView").classList.remove("hidden");
   }
 
   function carregarObrasCompleta() {
@@ -27,10 +35,26 @@
           <strong>${o.nome}</strong><br>
           Responsável: ${o.responsavel}<br>
           Endereço: ${o.endereco}<br>
-          <input type='file' onchange='uploadDocumento(this, "${key}")'>
+          <input type='file' class='form-control mt-2' onchange='uploadDocumento(this, "${key}")'>
           <small class='text-muted'>Enviar documento</small>
+          <ul class='mt-2' id='docs-${key}'></ul>
         `;
         lista.appendChild(li);
+        listarDocumentosObra(key);
+      });
+    });
+  }
+
+  function listarDocumentosObra(obraId) {
+    const storageRef = firebase.storage().ref(`documentos/${obraId}`);
+    const ul = document.getElementById(`docs-${obraId}`);
+    storageRef.listAll().then(result => {
+      result.items.forEach(itemRef => {
+        itemRef.getDownloadURL().then(url => {
+          const li = document.createElement("li");
+          li.innerHTML = `<a href='${url}' target='_blank'>${itemRef.name}</a>`;
+          ul.appendChild(li);
+        });
       });
     });
   }
@@ -49,6 +73,7 @@
     const storageRef = firebase.storage().ref(`documentos/${obraId}/${file.name}`);
     storageRef.put(file).then(snapshot => {
       alert("Documento enviado com sucesso para " + obraId);
+      listarDocumentosObra(obraId);
     }).catch(err => alert("Erro ao enviar documento: " + err));
   }
 </script>
