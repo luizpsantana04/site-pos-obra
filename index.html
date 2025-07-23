@@ -4,6 +4,90 @@
 <head>
   <meta charset="UTF-8">
   <title>Sistema Pós-Obra</title>
+  <!-- Substituindo pelos scripts compatíveis -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-compat.js" defer></script>
+  <script defer>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAc81JPqeLu2ssy-kGG0CEb_3BgqMJ5sJ4",
+      authDomain: "site-pos-obra.firebaseapp.com",
+      databaseURL: "https://site-pos-obra-default-rtdb.firebaseio.com",
+      projectId: "site-pos-obra",
+      storageBucket: "site-pos-obra.firebasestorage.app",
+      messagingSenderId: "325132739782",
+      appId: "1:325132739782:web:ee9981b80d1a673169a3c7",
+      measurementId: "G-XB7SC26WE0"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function cadastrarUsuario() {
+      const usuario = {
+        id: 'user-' + Date.now(),
+        nome: "João da Silva",
+        email: "joao@teste.com",
+        senha: "123456",
+        telefone: "(11) 99999-9999",
+        tipo: "usuario",
+        ativo: true,
+        dataCadastro: new Date().toISOString()
+      };
+      db.ref('usuarios').push(usuario);
+    }
+
+    function cadastrarObra() {
+      const obra = {
+        id: 'obra-' + Date.now(),
+        nome: "Reforma Sala",
+        responsavel: "user-001",
+        endereco: "Rua XPTO, 123",
+        dataInicio: "2024-01-01",
+        dataConclusao: "2024-06-01",
+        descricao: "Reforma completa da sala",
+        dataCadastro: new Date().toISOString()
+      };
+      db.ref('obras').push(obra);
+    }
+
+    function cadastrarManutencao() {
+      const manutencao = {
+        id: 'man-' + Date.now(),
+        obraId: "obra-001",
+        titulo: "Revisão Elétrica",
+        descricao: "Verificar rede elétrica",
+        data: "2024-09-01",
+        prioridade: "alta",
+        status: "pendente",
+        dataCadastro: new Date().toISOString()
+      };
+      db.ref('manutencoes').push(manutencao);
+    }
+
+    function cadastrarDocumento() {
+      const documento = {
+        id: 'doc-' + Date.now(),
+        obraId: "obra-001",
+        nome: "Planta baixa",
+        categoria: "planta",
+        descricao: "PDF da planta",
+        url: "https://exemplo.com/documento.pdf",
+        dataCadastro: new Date().toISOString()
+      };
+      db.ref('documentos').push(documento);
+    }
+
+    function cadastrarEvento() {
+      const evento = {
+        id: 'event-' + Date.now(),
+        obraId: "obra-001",
+        titulo: "Fundação finalizada",
+        data: "2024-03-10",
+        descricao: "Encerrado o processo de fundação",
+        dataCadastro: new Date().toISOString()
+      };
+      db.ref('eventos').push(evento);
+    }
+  </script>
 </head>
 <body>
   <h1>Cadastro no Firebase</h1>
@@ -12,92 +96,6 @@
   <button onclick="cadastrarManutencao()">Cadastrar Manutenção</button>
   <button onclick="cadastrarDocumento()">Cadastrar Documento</button>
   <button onclick="cadastrarEvento()">Cadastrar Evento</button>
-
-  <!-- Substituindo pelos scripts compatíveis -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-compat.js"></script>
-  <script>
-    window.addEventListener('load', () => {
-      const firebaseConfig = {
-        apiKey: "AIzaSyAc81JPqeLu2ssy-kGG0CEb_3BgqMJ5sJ4",
-        authDomain: "site-pos-obra.firebaseapp.com",
-        databaseURL: "https://site-pos-obra-default-rtdb.firebaseio.com",
-        projectId: "site-pos-obra",
-        storageBucket: "site-pos-obra.firebasestorage.app",
-        messagingSenderId: "325132739782",
-        appId: "1:325132739782:web:ee9981b80d1a673169a3c7",
-        measurementId: "G-XB7SC26WE0"
-      };
-
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.database();
-
-      window.cadastrarUsuario = function () {
-        const usuario = {
-          id: 'user-' + Date.now(),
-          nome: "João da Silva",
-          email: "joao@teste.com",
-          senha: "123456",
-          telefone: "(11) 99999-9999",
-          tipo: "usuario",
-          ativo: true,
-          dataCadastro: new Date().toISOString()
-        };
-        db.ref('usuarios').push(usuario);
-      }
-
-      window.cadastrarObra = function () {
-        const obra = {
-          id: 'obra-' + Date.now(),
-          nome: "Reforma Sala",
-          responsavel: "user-001",
-          endereco: "Rua XPTO, 123",
-          dataInicio: "2024-01-01",
-          dataConclusao: "2024-06-01",
-          descricao: "Reforma completa da sala",
-          dataCadastro: new Date().toISOString()
-        };
-        db.ref('obras').push(obra);
-      }
-
-      window.cadastrarManutencao = function () {
-        const manutencao = {
-          id: 'man-' + Date.now(),
-          obraId: "obra-001",
-          titulo: "Revisão Elétrica",
-          descricao: "Verificar rede elétrica",
-          data: "2024-09-01",
-          prioridade: "alta",
-          status: "pendente",
-          dataCadastro: new Date().toISOString()
-        };
-        db.ref('manutencoes').push(manutencao);
-      }
-
-      window.cadastrarDocumento = function () {
-        const documento = {
-          id: 'doc-' + Date.now(),
-          obraId: "obra-001",
-          nome: "Planta baixa",
-          categoria: "planta",
-          descricao: "PDF da planta",
-          url: "https://exemplo.com/documento.pdf",
-          dataCadastro: new Date().toISOString()
-        };
-        db.ref('documentos').push(documento);
-      }
-
-      window.cadastrarEvento = function () {
-        const evento = {
-          id: 'event-' + Date.now(),
-          obraId: "obra-001",
-          titulo: "Fundação finalizada",
-          data: "2024-03-10",
-          descricao: "Encerrado o processo de fundação",
-          dataCadastro: new Date().toISOString()
-        };
-        db.ref('eventos').push(evento);
-      }
-    });
-  </script>
 </body>
 </html>
+
