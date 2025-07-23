@@ -160,6 +160,14 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    document.getElementById("loginView").classList.add("hidden");
+    document.getElementById("appView").classList.remove("hidden");
+    carregarDashboard();
+  }
+});
+
 
 window.mostrarTela = function(tela) {
   const telas = ["dashboard", "cadastroObra", "cadastroUsuario", "cadastroManutencao", "linhaTempo"];
@@ -237,6 +245,20 @@ window.carregarTimeline = function () {
       const db = firebase.database();
 
       window.fazerLogin = function () {
+  const email = document.getElementById("loginEmail").value;
+  const senha = document.getElementById("loginSenha").value;
+
+  firebase.auth().signInWithEmailAndPassword(email, senha)
+    .then(() => {
+      document.getElementById("loginView").classList.add("hidden");
+      document.getElementById("appView").classList.remove("hidden");
+      carregarDashboard();
+    })
+    .catch((error) => {
+      console.error(error);
+      alert("Erro ao fazer login: " + error.message);
+    });
+};
         const email = document.getElementById("loginEmail").value;
         const senha = document.getElementById("loginSenha").value;
 
@@ -251,6 +273,11 @@ window.carregarTimeline = function () {
       }
 
       window.logout = function () {
+  firebase.auth().signOut().then(() => {
+    document.getElementById("loginView").classList.remove("hidden");
+    document.getElementById("appView").classList.add("hidden");
+  });
+};
         document.getElementById("loginView").classList.remove("hidden");
         document.getElementById("appView").classList.add("hidden");
       }
@@ -295,3 +322,4 @@ window.carregarTimeline = function () {
   </script>
 </body>
 </html>
+
