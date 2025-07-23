@@ -160,6 +160,22 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+window.fazerLogin = function () {
+  const email = document.getElementById("loginEmail").value;
+  const senha = document.getElementById("loginSenha").value;
+
+  firebase.auth().signInWithEmailAndPassword(email, senha)
+    .then(() => {
+      document.getElementById("loginView").classList.add("hidden");
+      document.getElementById("appView").classList.remove("hidden");
+      carregarDashboard();
+    })
+    .catch((error) => {
+      console.error(error);
+      alert("Erro ao fazer login: " + error.message);
+    });
+};
+
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
     document.getElementById("loginView").classList.add("hidden");
@@ -244,21 +260,7 @@ window.carregarTimeline = function () {
       firebase.initializeApp(firebaseConfig);
       const db = firebase.database();
 
-      window.fazerLogin = function () {
-  const email = document.getElementById("loginEmail").value;
-  const senha = document.getElementById("loginSenha").value;
-
-  firebase.auth().signInWithEmailAndPassword(email, senha)
-    .then(() => {
-      document.getElementById("loginView").classList.add("hidden");
-      document.getElementById("appView").classList.remove("hidden");
-      carregarDashboard();
-    })
-    .catch((error) => {
-      console.error(error);
-      alert("Erro ao fazer login: " + error.message);
-    });
-};
+      
         const email = document.getElementById("loginEmail").value;
         const senha = document.getElementById("loginSenha").value;
 
@@ -322,4 +324,3 @@ window.carregarTimeline = function () {
   </script>
 </body>
 </html>
-
