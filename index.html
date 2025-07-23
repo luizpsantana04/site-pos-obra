@@ -64,7 +64,12 @@
       <a class="navbar-brand fw-bold" href="#">🏗️ Sistema Pós-Obra</a>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link active" href="#">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#" onclick="mostrarTela('dashboard')">Dashboard</a></li>
+<li class="nav-item"><a class="nav-link" href="#" onclick="mostrarTela('cadastroObra')">Cadastro de Obra</a></li>
+<li class="nav-item"><a class="nav-link" href="#" onclick="mostrarTela('cadastroUsuario')">Cadastro de Usuário</a></li>
+<li class="nav-item"><a class="nav-link" href="#" onclick="mostrarTela('cadastroManutencao')">Cadastro de Manutenção</a></li>
+<li class="nav-item"><a class="nav-link" href="#" onclick="mostrarTela('linhaTempo')">Linha do Tempo</a></li>
+
           <li class="nav-item"><a class="nav-link" href="#">Obras</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Administração</a></li>
         </ul>
@@ -114,11 +119,109 @@
           <ul class="list-group" id="listaManutencoes"></ul>
         </div>
       </div>
-    </div>
+    
+<!-- Cadastro de Obra -->
+<div id="cadastroObra" class="hidden">
+  <h3>Cadastro de Obra</h3>
+  <input type="text" id="obraNome" class="form-control mb-2" placeholder="Nome da obra">
+  <input type="text" id="obraResponsavel" class="form-control mb-2" placeholder="Responsável">
+  <button class="btn btn-primary" onclick="salvarObra()">Salvar Obra</button>
+</div>
+
+<!-- Cadastro de Usuário -->
+<div id="cadastroUsuario" class="hidden">
+  <h3>Cadastro de Usuário</h3>
+  <input type="email" id="novoEmail" class="form-control mb-2" placeholder="E-mail do usuário">
+  <input type="password" id="novaSenha" class="form-control mb-2" placeholder="Senha">
+  <button class="btn btn-success" onclick="cadastrarUsuario()">Cadastrar</button>
+</div>
+
+<!-- Cadastro de Manutenção -->
+<div id="cadastroManutencao" class="hidden">
+  <h3>Cadastro de Manutenção</h3>
+  <input type="text" id="manuTitulo" class="form-control mb-2" placeholder="Título">
+  <input type="date" id="manuData" class="form-control mb-2">
+  <select id="manuPrioridade" class="form-control mb-2">
+    <option>Alta</option>
+    <option>Média</option>
+    <option>Baixa</option>
+  </select>
+  <button class="btn btn-warning" onclick="salvarManutencao()">Salvar Manutenção</button>
+</div>
+
+<!-- Linha do Tempo da Obra -->
+<div id="linhaTempo" class="hidden">
+  <h3>Linha do Tempo da Obra</h3>
+  <ul class="list-group" id="listaTimeline"></ul>
+</div>
+
+</div>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+
+window.mostrarTela = function(tela) {
+  const telas = ["dashboard", "cadastroObra", "cadastroUsuario", "cadastroManutencao", "linhaTempo"];
+  telas.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("hidden");
+  });
+  document.getElementById(tela).classList.remove("hidden");
+
+  if (tela === "linhaTempo") carregarTimeline();
+};
+
+window.salvarObra = function () {
+  const nome = document.getElementById("obraNome").value;
+  const responsavel = document.getElementById("obraResponsavel").value;
+  const novaObra = { nome, responsavel, data: new Date().toISOString() };
+
+  db.ref("obras").push(novaObra).then(() => {
+    alert("Obra cadastrada!");
+    document.getElementById("obraNome").value = "";
+    document.getElementById("obraResponsavel").value = "";
+    carregarDashboard();
+  });
+}
+
+window.salvarManutencao = function () {
+  const titulo = document.getElementById("manuTitulo").value;
+  const data = document.getElementById("manuData").value;
+  const prioridade = document.getElementById("manuPrioridade").value;
+  const novaManutencao = { titulo, data, prioridade, status: "pendente" };
+
+  db.ref("manutencoes").push(novaManutencao).then(() => {
+    alert("Manutenção cadastrada!");
+    document.getElementById("manuTitulo").value = "";
+    document.getElementById("manuData").value = "";
+    carregarDashboard();
+  });
+}
+
+window.cadastrarUsuario = function () {
+  const email = document.getElementById("novoEmail").value;
+  const senha = document.getElementById("novaSenha").value;
+  firebase.auth().createUserWithEmailAndPassword(email, senha)
+    .then(() => alert("Usuário criado com sucesso!"))
+    .catch(err => alert("Erro: " + err.message));
+}
+
+window.carregarTimeline = function () {
+  db.ref("obras").once("value", snapshot => {
+    const obras = snapshot.val() || {};
+    const lista = document.getElementById("listaTimeline");
+    lista.innerHTML = "";
+    Object.values(obras).sort((a,b) => new Date(b.data) - new Date(a.data)).forEach(o => {
+      const item = document.createElement("li");
+      item.className = "list-group-item";
+      item.innerHTML = `<strong>${o.nome}</strong><br><small>${new Date(o.data).toLocaleDateString()} - ${o.responsavel}</small>`;
+      lista.appendChild(item);
+    });
+  });
+}
+
+
       const firebaseConfig = {
         apiKey: "AIzaSyAc81JPqeLu2ssy-kGG0CEb_3BgqMJ5sJ4",
         authDomain: "site-pos-obra.firebaseapp.com",
