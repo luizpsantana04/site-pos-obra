@@ -47,7 +47,7 @@
     </div>
     <input id="loginEmail" type="email" class="form-control mb-2" placeholder="E-mail">
     <input id="loginSenha" type="password" class="form-control mb-3" placeholder="Sua senha">
-    <button id="btnLogin" class="btn btn-primary w-100">
+    <button class="btn btn-primary w-100" onclick="fazerLogin()">
       <i class="bi bi-box-arrow-in-right"></i> Entrar
     </button>
     <div class="alert alert-light mt-3 text-center small">
@@ -160,24 +160,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-document.getElementById("btnLogin").addEventListener("click", fazerLogin);
-
-window.fazerLogin = function () {
-  const email = document.getElementById("loginEmail").value;
-  const senha = document.getElementById("loginSenha").value;
-
-  firebase.auth().signInWithEmailAndPassword(email, senha)
-    .then(() => {
-      document.getElementById("loginView").classList.add("hidden");
-      document.getElementById("appView").classList.remove("hidden");
-      carregarDashboard();
-    })
-    .catch((error) => {
-      console.error(error);
-      alert("Erro ao fazer login: " + error.message);
-    });
-};
-
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
     document.getElementById("loginView").classList.add("hidden");
@@ -262,7 +244,21 @@ window.carregarTimeline = function () {
       firebase.initializeApp(firebaseConfig);
       const db = firebase.database();
 
-      
+      window.fazerLogin = function () {
+  const email = document.getElementById("loginEmail").value;
+  const senha = document.getElementById("loginSenha").value;
+
+  firebase.auth().signInWithEmailAndPassword(email, senha)
+    .then(() => {
+      document.getElementById("loginView").classList.add("hidden");
+      document.getElementById("appView").classList.remove("hidden");
+      carregarDashboard();
+    })
+    .catch((error) => {
+      console.error(error);
+      alert("Erro ao fazer login: " + error.message);
+    });
+};
         const email = document.getElementById("loginEmail").value;
         const senha = document.getElementById("loginSenha").value;
 
